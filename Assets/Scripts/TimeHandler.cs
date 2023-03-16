@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class TimeHandler : MonoBehaviour
@@ -14,31 +15,37 @@ public class TimeHandler : MonoBehaviour
     public TMP_Text LastByOneLapTimeField;
     public TMP_Text LastLapTimeField;
 
-    private const int Multiplier = 3;
-    private const int Speed = 10;
-    private readonly float[] _floats = new float[] { 7.7f, 1.4f, 5.5f, 6.5f, -0.5f };
+    [SerializeField]
+    private int _multiplier;
+
     private List<float> _checkpoints = new List<float>();
-
     private int _passedTime;
+    private float _timeOfPreviousLap;
+    private float _startTime;
 
-    void Start()
-    {
-        foreach (float num in _floats)
-        {
-            var instResult = Mathf.Round(num);
-            Debug.Log(instResult);
-        }
-    }
-
+    
     void Update()
     {
-        _passedTime = Mathf.RoundToInt(Time.time * Multiplier);
+        _passedTime = Mathf.RoundToInt(GetStartTime());
         TimeField.text = _passedTime.ToString() + " seconds";
+    }
+
+   
+    public void OnStartButtonClick()
+    {
+        _startTime = GetBoostedTime();
+    }
+
+    public void OnExitButtonButtonClick()
+    {
+        ClearFields();
     }
 
     public void OnLapButtonClick()
     {
-        _checkpoints.Add(Time.time * Multiplier);
+        var rangeOfLap = GetRangeOfLap();
+        _timeOfPreviousLap = GetBoostedTime();
+        _checkpoints.Add(rangeOfLap);
         LapCountField.text = _checkpoints.Count.ToString() + " laps";
         FinishCurrentLap();
     }
@@ -54,4 +61,19 @@ public class TimeHandler : MonoBehaviour
         }
     }
 
+    private float GetBoostedTime() => Time.time * _multiplier;
+
+    private float GetRangeOfLap() => GetBoostedTime() - _timeOfPreviousLap;
+    
+
+    private float GetStartTime() => GetBoostedTime() - _startTime;
+
+    private void ClearFields()
+    {
+        _checkpoints.Clear();
+        TimeField.text = "0 seconds";
+        LapCountField.text = "0 laps";
+        LastByOneLapTimeField.text = "-";
+        LastLapTimeField.text = "-";
+    }
 }
