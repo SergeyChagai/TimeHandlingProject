@@ -31,8 +31,12 @@ public class TimeHandler : MonoBehaviour
         get => _timerTime;
         set
         {
-            _timerTime = value;
-            TimeField.text = _timerTime.ToString();
+            if (value >= 0)
+            {
+                _timerTime = value;
+                TimeField.text = _timerTime.ToString();
+            }
+            else EndGameAction?.Invoke(GameResult.Loose);
         }
     }
     #endregion
@@ -40,6 +44,7 @@ public class TimeHandler : MonoBehaviour
     private float _startTime;
     private int _passedTime;
     private int _timerRange;
+    private TimerState _state;
 
 
     private void Start()
@@ -49,7 +54,7 @@ public class TimeHandler : MonoBehaviour
 
     void Update()
     {
-        if (_startTime != 0)
+        if (_state == TimerState.Run)
         {
             _passedTime = Mathf.RoundToInt(GetTime() - _startTime);
             TimerTime = _timerRange - _passedTime;
@@ -57,14 +62,16 @@ public class TimeHandler : MonoBehaviour
     }
 
 
-    public void OnStartButtonClick()
+    public void Run()
     {
         _startTime = GetTime();
+        _state = TimerState.Run;
     }
 
-    public void OnExitButtonButtonClick()
+    public void Stop()
     {
         ClearFields();
+        _state = TimerState.Stop;
     }
 
 
@@ -77,15 +84,8 @@ public class TimeHandler : MonoBehaviour
     }
 }
 
-public enum States: short
+public enum TimerState : short
 {
-    InactiveState,
-    RunState
-}
-
-public enum GameResult : short
-{
-    Success,
-    Loose,
-    Abort
+    Stop,
+    Run
 }

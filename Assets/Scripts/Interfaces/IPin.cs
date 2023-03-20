@@ -4,7 +4,8 @@ using UnityEngine;
 
 public interface IPin
 {
-    StatesRange StatesRange { get; }
-    int CorrectState { get; }
-    int CurrentState { get; set; }
+    PinState State { get; }
+    PositionsRange PositionsRange { get; }
+    int CorrectPosition { get; }
+    int CurrentPosition { get; set; }
 }

@@ -9,54 +9,82 @@ public class Pin : MonoBehaviour, IPin
     [SerializeField]
     private string Position;
 
-    public StatesRange StatesRange { get; private set; }
-    public int CorrectState { get; private set; }
+    public event Action OnPinObjectInitialized;
+    public PinState State { get => CheckState(); }
+    public PositionsRange PositionsRange { get; private set; }
+    public int CorrectPosition { get; private set; }
 
-    private int _currentState;
-    public int CurrentState
+    private int _currentPosition;
+    private TMP_Text _textField;
+    public int CurrentPosition
     {
-        get => _currentState;
+        get => _currentPosition;
         set
         {
-            switch (StatesRange.CheckStateEntry(value))
+            switch (PositionsRange.CheckPositionEntry(value))
             {
-                case StateToRangeRelation.Lower:
-                    _currentState = StatesRange.LowState; break;
-                case StateToRangeRelation.Upper:
-                    _currentState = StatesRange.HighState; break;
+                case PositionToRangeRelation.Lower:
+                    _currentPosition = PositionsRange.LowestPosition; break;
+                case PositionToRangeRelation.Upper:
+                    _currentPosition = PositionsRange.HighestPosition; break;
                 default:
-                    _currentState = value; break;
+                    _currentPosition = value; break;
             }
-            _textField.text = _currentState.ToString();
+            if (_textField != null)
+            {
+                _textField.text = _currentPosition.ToString();
+            }
         }
     }
 
-    private TMP_Text _textField;
+    public void ResetPin()
+    {
+        //var random = new System.Random();
+
+        PositionsRange = InitialFactory.GetStatesRange();
+        CorrectPosition = InitialFactory.GetCorrectState();
+        //CurrentPosition = random.Next(PositionsRange.LowestPosition, PositionsRange.HighestPosition);
+    }
 
     private void Start()
     {
         _textField = GetComponentInChildren<TMP_Text>();
-
-        StatesRange = InitialFactory.GetStatesRange();
-        CorrectState = InitialFactory.GetCorrectState();
-        CurrentState = Convert.ToInt32(Position);
+        OnPinObjectInitialized?.Invoke();
     }
-}
 
-
-public class StatesRange
-{
-    public int LowState;
-    public int HighState;
-    public StateToRangeRelation CheckStateEntry(int state)
+    private void Awake()
     {
-        if (state < LowState) return StateToRangeRelation.Lower;
-        else if (state > HighState) return StateToRangeRelation.Upper;
-        else return StateToRangeRelation.InRange;
+        ResetPin();
+    }
+
+    private PinState CheckState()
+    {
+        return CurrentPosition == CorrectPosition
+            ? PinState.CorrectPosition
+            : PinState.IncorrectPosition;
     }
 }
 
-public enum StateToRangeRelation: byte
+
+public class PositionsRange
+{
+    public int LowestPosition;
+    public int HighestPosition;
+    public PositionToRangeRelation CheckPositionEntry(int state)
+    {
+        if (state < LowestPosition) return PositionToRangeRelation.Lower;
+        else if (state > HighestPosition) return PositionToRangeRelation.Upper;
+        else return PositionToRangeRelation.InRange;
+    }
+}
+
+public enum PositionToRangeRelation : byte
 {
     InRange, Lower, Upper
+}
+
+public enum PinState : byte
+{
+    CorrectPosition,
+    IncorrectPosition
 }

@@ -1,0 +1,26 @@
+[
+  {
+    "name": "drill",
+    "affectData": [
+      1,
+      -1,
+      0
+    ]
+  },
+  {
+    "name": "hammer",
+    "affectData": [
+      -1,
+      2,
+      -1
+    ]
+  },
+  {
+    "name": "lockpick",
+    "affectData": [
+      -1,
+      1,
+      1
+    ]
+  }
+]
