@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Tool
   - Pin
+  - CurrentPosition
+  - CorrectPosition
   layers:
   - Default
   - TransparentFX

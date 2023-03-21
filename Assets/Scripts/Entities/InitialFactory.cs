@@ -33,8 +33,8 @@ public class InitialFactory
     public static Dictionary<GameResult, string> GetInfoTextMessages()
     {
         var dict = new Dictionary<GameResult, string>();
-        dict.Add(GameResult.Success, "Congratulations! You win :)");
-        dict.Add(GameResult.Loose, "You loose :(");
+        dict.Add(GameResult.Success, "Congratulations! You win :)\nAs you focus on the lock mechanism, your fingers move deftly over the tumblers. You hear a satisfying click and the lock opens. With a grin of triumph, you push the door open and step out of your cell. You are free! You sneak past the sleeping guards and make your way out of the prison, elated at your success. You know that you'll need to keep a low profile for a while, but you can't help but feel a rush of excitement at the thought of your next heist.");
+        dict.Add(GameResult.Loose, "You loose :(\nYour hands shake as you attempt to manipulate the lock, but the tumblers refuse to budge. After several minutes of fruitless effort, you realize that you're not going to be able to pick the lock. Your heart sinks as you hear footsteps approaching. The guards have discovered your attempts to escape. You brace yourself for the punishment that is sure to come, knowing that your dreams of a life of crime have come to an abrupt end.");
         dict.Add(GameResult.Abort, "Game was stopped");
         return dict;
     }
